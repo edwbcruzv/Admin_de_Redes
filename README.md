@@ -33,7 +33,7 @@ SMI: RFC1155 RFC 2578
 
 MIBs: RFC1213
 
-TCP7IP: RFC1156, seccion 5 (objetos)
+TCP7IP: RFC1156 https://datatracker.ietf.org/doc/html/rfc1156#section-5, seccion 5 (objetos)
     Informacion del sistema
 
 SNMP: V1:1156 V3:RFC3411,RFC3416
