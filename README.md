@@ -22,3 +22,18 @@ Se recomienda instalar los que viene en requirements.txt.Para hacerlo escribir l
 >pip3 install rrdtool
 
 >pip3 install pysnmp
+
+
+
+# Sobre la materia
+
+### Referencias
+
+SMI: RFC1155 RFC 2578
+
+MIBs: RFC1213
+
+TCP7IP: RFC1156, seccion 5 (objetos)
+    Informacion del sistema
+
+SNMP: V1:1156 V3:RFC3411,RFC3416
