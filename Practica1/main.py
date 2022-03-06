@@ -5,6 +5,8 @@ from time import *
 import json
 import os
 import threading
+from reportlab.pdfgen import canvas
+
 
 class Agente:
 
@@ -35,7 +37,7 @@ class Agente:
             print("Host:",self.Host)
             print("Nombre del sistema:",self.Nombre_sistema)
             print("Numero de interfaces de red:",self.Num_interfaces)
-            print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"")
+            print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"Segs")
             return True
         except :
             print("Error en status")
@@ -43,9 +45,9 @@ class Agente:
         
 
     def analisis(self):
-        self.creaBases()
+        self.creaBases() #creo mis bases
         inicio=time()
-        fin= inicio + 60 #960# 16 minutos
+        fin= inicio + 960# 16 minutos
         while True:
             print(self.updateListaConsultas())
             inicio=time()
@@ -60,6 +62,7 @@ class Agente:
         self.nuevaRDD("octets.rrd")
         self.nuevaRDD("ports.rrd")
 
+    #ciclo update
     def creaGraficas(self):
         self.nuevaGrafica("multicast.png",'multicast.rrd')
         self.nuevaGrafica("ipv4.png",'ipv4.rrd')
@@ -156,6 +159,14 @@ class Agente:
     def __eq__(self, agente):
         return self.Host==agente.Host
 
+    def reporte(self):
+        c=canvas.Canvas(self.Host+"/"+self.Host+"_report.pdf")
+        c.save()
+
+        c.drawString(50, 50, "hola")
+
+
+
     # def __del__(self):
     #     os.rmdir(self.Host)
 
@@ -199,17 +210,21 @@ class Agentes:
     def reportes(self):
         pass
         list_hilos=[]
-        for index,agente in zip(range(0,len(self.agentes)),self.agentes):
-        #for agente in self.agentes:
-            list_hilos.append(threading.Thread(target=agente.analisis))
-            list_hilos[index].start()
+        # for index,agente in zip(range(0,len(self.agentes)),self.agentes):
+        # #for agente in self.agentes:
+        #     list_hilos.append(threading.Thread(target=agente.analisis))
+        #     list_hilos[index].start()
+
+        for agente in self.agentes:
+            agente.reporte()
+        
         
 
     def status(self):
         for agente in self.agentes:
             agente.status()
 
-    
+
 
 
 if __name__=='__main__':
