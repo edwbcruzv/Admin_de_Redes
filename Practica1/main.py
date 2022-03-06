@@ -1,56 +1,10 @@
 # from GetSNMP import *
 from pysnmp.hlapi import *
 import rrdtool
-import time
+from time import *
 import json
 import os
-
-
-
-
-
-# se encarga de crear las bases que necesitamos
-
-
-
-def nuevaGrafica(nombre_grafica:str,base_RRD:str):
-    # tiempo actual
-    tiempo_actual = int(time.time())
-    #Grafica desde el tiempo actual menos diez minutos
-    tiempo_inicial = tiempo_actual - 690 #16 minutos lo que dura el analisis
-    # solo se generara una grafica en base al tradico de red
-    ret = rrdtool.graph( nombre_grafica,
-                        "--start",str(tiempo_inicial),
-                        "--end","N",
-                        "--vertical-label=Bytes/s", # maquillaje para la grafica
-                        "--title=Tráfico de Red de un agente \n Usando SNMP y RRDtools", # maquillaje para la grafica
-                        # se consulta la informacion para graficarlo
-                        "DEF:traficoEntrada="+base_RRD+":octets:AVERAGE",
-                        # recorre toda la coleccion para convertir los octetos a bites
-                        "CDEF:escalaIn=traficoEntrada,8,*",
-                        # Para imprimir los datos
-                        "LINE3:escalaIn#00FF00:Trafico de entrada")
-
-def creaGraficas():
-    nuevaGrafica("multicast.png",'multicast.rrd')
-    nuevaGrafica("ipv4.png",'ipv4.rrd')
-    nuevaGrafica("icmp.png",'icmp.rrd')
-    nuevaGrafica("octets.png",'octets.rrd')
-    nuevaGrafica("ports.png",'ports.rrd')
-
-
-def trafico(comunidad:str, host:str):
-    listaConsultas(comunidad, host)
-    creaBases()
-    inicio=time.time()
-    fin= inicio + 960# 16 minutos
-    while True:
-        listaConsultas()
-        inicio=time.time()
-        if not inicio < fin:
-            break
-    creaGraficas()
-
+import threading
 
 class Agente:
 
@@ -64,24 +18,40 @@ class Agente:
         self.Tiempo_Activo=None
         self.Lista_Consultas=[0,0,0,0,0]
         # Creando carpeta para almacenar las bases de datos generadas
+
         try:
             os.mkdir(self.Host)
         except:
             pass
-        self.creaBases()
 
-    def status(self):
-        self.Nombre_sistema=self.consultaSNMP("1.3.6.1.2.1.1.1.0")
-        # Version y logo del sistema operativo (lo ponemos nosotros)
-        # Ubicacion geografica 
-        self.Num_interfaces=self.consultaSNMP("1.3.6.1.2.1.2.1.0") 
-        self.Tiempo_Activo=self.consultaSNMP("1.3.6.1.2.1.1.3.0")  
-        print("|==============================|\nComunidad:",self.Comunidad)
-        print("Host:",self.Host)
-        print("Nombre del sistema:",self.Nombre_sistema)
-        print("Numero de interfaces de red:",self.Num_interfaces)
-        print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"")
-        print(self.updateListaConsultas())
+    def status(self)->bool:
+        try:
+            self.Nombre_sistema=self.consultaSNMP("1.3.6.1.2.1.1.1.0")
+            # Version y logo del sistema operativo (lo ponemos nosotros)
+            # Ubicacion geografica 
+            self.Num_interfaces=self.consultaSNMP("1.3.6.1.2.1.2.1.0") 
+            self.Tiempo_Activo=self.consultaSNMP("1.3.6.1.2.1.1.3.0")  
+            print("|==============================|\nComunidad:",self.Comunidad)
+            print("Host:",self.Host)
+            print("Nombre del sistema:",self.Nombre_sistema)
+            print("Numero de interfaces de red:",self.Num_interfaces)
+            print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"")
+            return True
+        except :
+            print("Error en status")
+            return False
+        
+
+    def analisis(self):
+        self.creaBases()
+        inicio=time()
+        fin= inicio + 60 #960# 16 minutos
+        while True:
+            print(self.updateListaConsultas())
+            inicio=time()
+            if not inicio < fin:
+                break
+        self.creaGraficas()
 
     def creaBases(self):
         self.nuevaRDD("multicast.rrd")
@@ -90,35 +60,42 @@ class Agente:
         self.nuevaRDD("octets.rrd")
         self.nuevaRDD("ports.rrd")
 
+    def creaGraficas(self):
+        self.nuevaGrafica("multicast.png",'multicast.rrd')
+        self.nuevaGrafica("ipv4.png",'ipv4.rrd')
+        self.nuevaGrafica("icmp.png",'icmp.rrd')
+        self.nuevaGrafica("octets.png",'octets.rrd')
+        self.nuevaGrafica("ports.png",'ports.rrd')
+
     def updateListaConsultas(self)->list:
         #str_mib="1.3.6.1.2.1."
         
         # print("2) Paquetes multicast que ha recibido una interfaz (ifInNUcastPkts) 1.3.6.1.2.1.2.2.1.12.1 counter")
         self.Lista_Consultas[0] = self.consultaSNMP("1.3.6.1.2.1.2.2.1.12.1")
         rrdtool.update(self.Host+'/multicast.rrd', "N:" + self.Lista_Consultas[0])
-        rrdtool.dump(self.Host+'/multicast.rrd','multicast.xml')
+        rrdtool.dump(self.Host+'/multicast.rrd',self.Host+'/multicast.xml')
 
         # print("2) Paquetes recibidos exitosamente, entregados a protocolos IPv4. (ipInDelivers) 1.3.6.1.2.1.4.9.0 counter")
         self.Lista_Consultas[1] = self.consultaSNMP("1.3.6.1.2.1.4.9.0")
         rrdtool.update(self.Host+'/ipv4.rrd', "N:" + self.Lista_Consultas[1])
-        rrdtool.dump(self.Host+'/ipv4.rrd','ipv4.xml')
+        rrdtool.dump(self.Host+'/ipv4.rrd',self.Host+'/ipv4.xml')
 
         # print("2) Mensajes de respuesta ICMP que ha enviado el agente (icmpOutEchoReps) 1.3.6.1.2.1.5.22.0 counter")
         self.Lista_Consultas[2] = self.consultaSNMP("1.3.6.1.2.1.5.22.0")
         rrdtool.update(self.Host+'/icmp.rrd', "N:" + self.Lista_Consultas[2])
-        rrdtool.dump(self.Host+'/icmp.rrd','icmp.xml')
+        rrdtool.dump(self.Host+'/icmp.rrd',self.Host+'/icmp.xml')
 
         # print("2) Segmentos enviados, incluyendo los de las conexiones actuales, ",
         #     "pero excluyendo los que contienen solamente octetos retransmitidos (ifOutOctets) 1.3.6.1.2.1.2.2.1.16.1 counter")
         self.Lista_Consultas[3] = self.consultaSNMP("1.3.6.1.2.1.2.2.1.16.1")
         rrdtool.update(self.Host+'/octets.rrd', "N:" + self.Lista_Consultas[3])
-        rrdtool.dump(self.Host+'/octets.rrd','octets.xml')
+        rrdtool.dump(self.Host+'/octets.rrd',self.Host+'/octets.xml')
 
         # print("D2) Datagramas recibidos que no pudieron ser entregados por cuestiones ",
         #     "distintas a la falta de aplicación en el puerto destino (udpNoPorts) 1.3.6.1.2.1.7.2.0 counter")
         self.Lista_Consultas[4] = self.consultaSNMP("1.3.6.1.2.1.7.2.0")
         rrdtool.update(self.Host+'/ports.rrd', "N:" + self.Lista_Consultas[4])
-        rrdtool.dump(self.Host+'/ports.rrd','ports.xml')
+        rrdtool.dump(self.Host+'/ports.rrd',self.Host+'/ports.xml')
 
         return self.Lista_Consultas
 
@@ -158,10 +135,29 @@ class Agente:
         if ret:
             print (rrdtool.error())
 
+    def nuevaGrafica(self,nombre_grafica:str,base_RRD:str):
+        # tiempo actual
+        tiempo_actual = int(time())
+        #Grafica desde el tiempo actual menos diez minutos
+        tiempo_inicial = tiempo_actual - 690 #16 minutos lo que dura el analisis
+        # solo se generara una grafica en base al tradico de red
+        ret = rrdtool.graph( self.Host+"/"+nombre_grafica,
+                        "--start",str(tiempo_inicial),
+                        "--end","N",
+                        "--vertical-label=Bytes/s", # maquillaje para la grafica
+                        "--title=oid", # maquillaje para la grafica
+                        # se consulta la informacion para graficarlo
+                        "DEF:trafico="+self.Host+"/"+base_RRD+":octets:AVERAGE",
+                        # recorre toda la coleccion para convertir los octetos a bites
+                        "CDEF:escalaIn=trafico,8,*",
+                        # Para imprimir los datos
+                        "LINE3:escalaIn#00FF00:Trafico de entrada")
+
     def __eq__(self, agente):
         return self.Host==agente.Host
 
-
+    # def __del__(self):
+    #     os.rmdir(self.Host)
 
 class Agentes:
     def __init__(self,comunidad:str):
@@ -176,18 +172,38 @@ class Agentes:
 
 
     def agregar(self,host:str):
-        self.temp_list.append(host)
-        self.agentes.append(Agente(self.Comunidad,host))
-        self.actualizar()
+        nuevo=Agente(self.Comunidad,host)
+        if nuevo.status():
+            self.temp_list.append(host)
+            self.agentes.append(nuevo)
+            self.actualizar()
+            return True
+        else:
+            del nuevo
+            return False
 
     def eliminar(self,host:str):
-        self.temp_list.remove(host)
-        self.agentes.remove(Agente(self.Comunidad,host))
-        self.actualizar()
+        nuevo=Agente(self.Comunidad,host)
+        if nuevo.status():
+            self.temp_list.remove(host)
+            self.agentes.remove(nuevo)
+            self.actualizar()
+            return True
+        else:
+            return False
 
     def actualizar(self):
         with open("agentes.json",'w') as temp_file:
             json.dump(self.temp_list,temp_file)
+        
+    def reportes(self):
+        pass
+        list_hilos=[]
+        for index,agente in zip(range(0,len(self.agentes)),self.agentes):
+        #for agente in self.agentes:
+            list_hilos.append(threading.Thread(target=agente.analisis))
+            list_hilos[index].start()
+        
 
     def status(self):
         for agente in self.agentes:
@@ -201,26 +217,32 @@ if __name__=='__main__':
     comunidad="123"
     agentes=Agentes(comunidad)
     
-
     opcion=0
     while True:
+        os.system("clear")
+        print(agentes.temp_list)
         agentes.status()
-        print("Menu:\n1)Alta.\n2.)Baja.\n3)ver trafico y generar reporte.\n4)Salir\n")
+        print("|==============================|")
+        print("Menu:\n1)Alta.\n2)Baja.\n3)ver trafico y generar reporte.\n4)Salir\n")
         opcion=int(input("Escriba la opcion: "))
         if opcion==1:
             nuevo_host=input("Escriba un host valido: ")
-            # agentes.agregar(nuevo_host)
-            print("Agregado")
+            if agentes.agregar(nuevo_host):
+                print("Agregado.")
+            else:
+                print("No se encontro el agente.")
             sleep(3)
         elif opcion==2:
             fuera_host=input("Escriba el host a eliminar: ")
-            # agente.eliminar(fuera_host)
-            print("Eliminado")
+            if agentes.eliminar(fuera_host):
+                print("Eliminado")
+            else:
+                print("No se encontro el agente a eliminar.") 
             sleep(3)
         elif opcion==3:
-            reporte_host=input("escriba el host a examinar: ")
-            print("Espere 16 min en lo que se genera el reporte... en un momento comienza..")
-            sleep(5)
+            print("Espere 16 min en lo que se genera el reporte de todos los host de la lista... en un momento comienza..")
+            agentes.reportes()
+            sleep(2)
         elif opcion==4:
             break
         else:
