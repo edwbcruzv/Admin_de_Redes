@@ -58,10 +58,10 @@ Mib-2: 1.3.6.1.2.1.
 
 ## Se debera de crear un documento PDF mostrando las 5 graficas y mostrar la sig informacion
 
-Nombre
-Version y logo del sistema operativo
-Ubicacion geografica
-Numero de interfaces de red
-Tiempo de actividad desde el ultimo reinicio
-comunidad
+Nombre del sistema 1.3.6.1.2.1.1.1.0
+Version y logo del sistema operativo (lo ponemos nosotros)
+Ubicacion geografica 
+Numero de interfaces de red 1.3.6.1.2.1.2.1.0
+Tiempo de actividad desde el ultimo reinicio 1.3.6.1.2.1.1.3.0
+comunidad 
 IP
