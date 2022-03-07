@@ -47,7 +47,7 @@ class Agente:
     def analisis(self):
         self.creaBases() #creo mis bases
         inicio=time()
-        fin= inicio + 960# 16 minutos
+        fin= inicio + 690# 16 minutos
         while True:
             print(self.updateListaConsultas())
             inicio=time()
@@ -119,6 +119,7 @@ class Agente:
         else:
             for varBind in varBinds:
                 varB=(' = '.join([x.prettyPrint() for x in varBind]))
+                # print(varB)
                 resultado= varB.split()[2] # se agarra la ultima parte de la consulta
         return resultado
 
@@ -148,7 +149,7 @@ class Agente:
                         "--start",str(tiempo_inicial),
                         "--end","N",
                         "--vertical-label=Bytes/s", # maquillaje para la grafica
-                        "--title=oid", # maquillaje para la grafica
+                        "--title="+nombre_grafica, # maquillaje para la grafica
                         # se consulta la informacion para graficarlo
                         "DEF:trafico="+self.Host+"/"+base_RRD+":octets:AVERAGE",
                         # recorre toda la coleccion para convertir los octetos a bites
@@ -161,10 +162,23 @@ class Agente:
 
     def reporte(self):
         c=canvas.Canvas(self.Host+"/"+self.Host+"_report.pdf")
+        
+        c.drawString(170, 780, "Reporte de trafico hecho por Cruz villalba Edwin Benrardo")
+
+        datos_principales= ("Comunidad:"+self.Comunidad+"\n",
+                "Host:"+self.Host+"\n",
+                "Nombre del sistema:"+self.Nombre_sistema+"\n",
+                "Numero de interfaces:"+self.Num_interfaces+"\n",
+                "Tiempo activo:"+self.Tiempo_Activo)
+        texto=c.beginText(70,760)
+        texto.textLines(datos_principales)
+        c.drawImage(self.Host+"/icmp.png", 30, 550, width=250, height=100)
+        c.drawImage(self.Host+"/ipv4.png", 30, 450, width=250, height=100)
+        c.drawImage(self.Host+"/multicast.png", 290, 550, width=250, height=100)
+        c.drawImage(self.Host+"/octets.png", 290, 450, width=250, height=100)
+        c.drawImage(self.Host+"/ports.png", 150,350, width=250, height=100)
+        c.drawText(texto)
         c.save()
-
-        c.drawString(50, 50, "hola")
-
 
 
     # def __del__(self):
@@ -207,24 +221,22 @@ class Agentes:
         with open("agentes.json",'w') as temp_file:
             json.dump(self.temp_list,temp_file)
         
-    def reportes(self):
+    def trafico(self):
         pass
         list_hilos=[]
-        # for index,agente in zip(range(0,len(self.agentes)),self.agentes):
-        # #for agente in self.agentes:
-        #     list_hilos.append(threading.Thread(target=agente.analisis))
-        #     list_hilos[index].start()
+        for index,agente in zip(range(0,len(self.agentes)),self.agentes):
+        #for agente in self.agentes:
+            list_hilos.append(threading.Thread(target=agente.analisis))
+            list_hilos[index].start()
 
+    def reportes(self):
         for agente in self.agentes:
             agente.reporte()
         
         
-
     def status(self):
         for agente in self.agentes:
             agente.status()
-
-
 
 
 if __name__=='__main__':
@@ -238,7 +250,7 @@ if __name__=='__main__':
         print(agentes.temp_list)
         agentes.status()
         print("|==============================|")
-        print("Menu:\n1)Alta.\n2)Baja.\n3)ver trafico y generar reporte.\n4)Salir\n")
+        print("Menu:\n1)Alta.\n2)Baja.\n3)Trafico.\n4)Generar reporte\n5)Salir\n")
         opcion=int(input("Escriba la opcion: "))
         if opcion==1:
             nuevo_host=input("Escriba un host valido: ")
@@ -255,10 +267,14 @@ if __name__=='__main__':
                 print("No se encontro el agente a eliminar.") 
             sleep(3)
         elif opcion==3:
-            print("Espere 16 min en lo que se genera el reporte de todos los host de la lista... en un momento comienza..")
-            agentes.reportes()
+            print("Espere 16 min para que se llene la base de datos...")
+            agentes.trafico()
             sleep(2)
         elif opcion==4:
+            print("Generando reportes... Espere")
+            agentes.reportes()
+            sleep(2)
+        elif opcion==5:
             break
         else:
             continue
