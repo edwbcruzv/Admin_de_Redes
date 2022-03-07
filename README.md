@@ -58,7 +58,7 @@ SNMP_v1: [RFC1156seccion 5 (objetos)](https://datatracker.ietf.org/doc/html/rfc1
 
 
 
-En esta liga nos llevara a la seccion donde se describen los nodos de Transimison hasta SNMP que corresponden a la version 2 y nuevos cambios
+En esta liga nos llevara a la seccion donde se describen los nodos de Transimison hasta SNMP que corresponden a la version 2 y nuevos cambios.
 ![imagen de la version dos](./Images/SNMP_v2_RFC_1213.PNG)
 
 SNMP_v2: [RFC1213 seccion 3 (Cambios a la RFC 1156)](https://datatracker.ietf.org/doc/html/rfc1213#section-3)
