@@ -29,22 +29,22 @@ Se recomienda instalar los que viene en requirements.txt.Para hacerlo escribir l
 
 ### Referencias
 
-SMI_V1: [Estructura e identificación de la información de gestión para Internet basadas en TCP/IP](https://datatracker.ietf.org/doc/html/rfc1155).
+SMI_V1: [rfc1155:Estructura e identificación de la información de gestión para Internet basadas en TCP/IP](https://datatracker.ietf.org/doc/html/rfc1155).
 
-SMI_V2: [Estructura de Información de Gestión Versión 2](https://datatracker.ietf.org/doc/html/rfc2578).
+SMI_V2: [rfc2578:Estructura de Información de Gestión Versión 2](https://datatracker.ietf.org/doc/html/rfc2578).
 
-[Convenciones textuales para SMIv2](https://datatracker.ietf.org/doc/html/rfc2579).
+[rfc2579:Convenciones textuales para SMIv2](https://datatracker.ietf.org/doc/html/rfc2579).
 
-[Definiciones concisas de MIB](https://datatracker.ietf.org/doc/html/rfc1212).
+[rfc1212:Definiciones concisas de MIB](https://datatracker.ietf.org/doc/html/rfc1212).
 
 
-[Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP](https://datatracker.ietf.org/doc/html/rfc1156).
+[rfc1156:Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP](https://datatracker.ietf.org/doc/html/rfc1156).
 
-[Un protocolo simple de administración de red (SNMP)](https://datatracker.ietf.org/doc/html/rfc1157).
+[rfc1157:Un protocolo simple de administración de red (SNMP)](https://datatracker.ietf.org/doc/html/rfc1157).
 
-[Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP: MIB-II](https://datatracker.ietf.org/doc/html/rfc1158).
+[rfc1158:Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP: MIB-II](https://datatracker.ietf.org/doc/html/rfc1158).
 
-[Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP: MIB-II (continuacion?)](https://datatracker.ietf.org/doc/html/rfc1213).
+[rfc1213:Base de información de gestión para la gestión de redes de Internet basadas en TCP/IP: MIB-II (continuacion?)](https://datatracker.ietf.org/doc/html/rfc1213).
 
 En resumen se puede ver la estreuctura general de la MIB para poder recorrerla
 
@@ -52,7 +52,7 @@ En resumen se puede ver la estreuctura general de la MIB para poder recorrerla
 
 En esta liga nos llevara a la seccion donde se describen los nodos de Sistem hasta EGP que corresponden a la version 1
 
-SNMP_v1: [RFC1156seccion 5 (objetos)](https://datatracker.ietf.org/doc/html/rfc1156#section-5).
+SNMP_v1: [RFC1156 Seccion 5 (objetos)](https://datatracker.ietf.org/doc/html/rfc1156#section-5).
 
 ![Imagen  seccion 5](./Images/SNMP_v1_RFC_1156.PNG)
 
