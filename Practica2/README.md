@@ -1,6 +1,6 @@
 # Practica 2
 
-[RFC2975:Introducción a la Gestión Contable](https://datatracker.ietf.org/doc/html/rfc2975)
+[RFC2975:Introducción a la Gestión(revisar) Contable](https://datatracker.ietf.org/doc/html/rfc2975)
 [RFC2924:Atributos contables y formatos de registro](https://www.rfc-editor.org/rfc/rfc2924.html)
 
 
@@ -8,7 +8,7 @@
 
 [Arquitectura de la RFC2924](https://www.rfc-editor.org/rfc/rfc2924.html#section-3)
 
-[Seccion de los parametros que usaremos de la RFC294](https://www.rfc-editor.org/rfc/rfc2924.html#section-4.1)
+[Seccion de los parametros que usaremos RADIUS de la RFC2924](https://www.rfc-editor.org/rfc/rfc2924.html#section-4.1)
 
 
 
