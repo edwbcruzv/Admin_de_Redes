@@ -29,7 +29,6 @@ class Agente:
     def status(self)->bool:
         try:
             self.Nombre_sistema=self.consultaSNMP("1.3.6.1.2.1.1.1.0")
-            # Version y logo del sistema operativo (lo ponemos nosotros)
             # Ubicacion geografica 
             self.Num_interfaces=self.consultaSNMP("1.3.6.1.2.1.2.1.0") 
             self.Tiempo_Activo=self.consultaSNMP("1.3.6.1.2.1.1.3.0")  
@@ -44,17 +43,40 @@ class Agente:
             return False
         
 
-    def reporte(self):
+    def registrar(self):
         self.nuevaRDD("miUDP.rrd") # creando base de datos para 10 min
         # dejando 10 min corriendo el while para llenar la base de datos
         inicio=time()
-        fin= inicio + 600# 10 minutos
+        fin= inicio + 60# 10 minutos
         while True:
             print(self.updateListaConsultas())
             inicio=time()
             if not inicio < fin:
                 break
+        # print(rrdtool.lastupdate(self.Host+"/"+"miUDP.rrd"))
+
+    def reporte(self):
+        ultima_lectura=int(rrdtool.last(self.Host+"/"+"miUDP.rrd"))
+        print(ultima_lectura)
+        tiempo_final=ultima_lectura
+        tiempo_inicial=tiempo_final-60
         
+        dicc=rrdtool.fetch(self.Host+'/miUDP.rrd',"-s,"+str(tiempo_inicial),"LAST")
+        Filas=6
+        datos=dicc[2][Filas-1]
+        print(datos)
+
+        print("|=============Servicio UDP TFTP=================|")
+        print("Comunidad:",self.Comunidad)
+        print("Host:",self.Host)
+        print("Nombre del sistema:",self.Nombre_sistema)
+        print("Numero de interfaces de red:",self.Num_interfaces)
+        print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"Segs")
+        
+        print("#udpInDatagrams:",datos[0])
+        print("#udpNoPorts:",datos[1])
+        print("#updInErrors:",datos[2])
+        print("#udpOutDatagrams:",datos[3])
             
 
     def updateListaConsultas(self)->list:
@@ -108,14 +130,14 @@ class Agente:
                             "--start", # momento que se empieza a almacenar los datos
                             'N',# now (empieza al momento de ejecutar el script) (tambien un numero)
                             "--step", # un step
-                            '1',      # cada minuto
+                            '10',      # cada minuto
         #DS: Octetos de entrada : Tipo contador : cada dos minutos : sin limites minumos : sin limites maximos
                             "DS:con1:COUNTER:60:U:U",
                             "DS:con2:COUNTER:60:U:U",
                             "DS:con3:COUNTER:60:U:U",
                             "DS:con4:COUNTER:60:U:U",
         #RRA: Cada 60 segs de hace un : la mitad de muestras se validan: cada 1 step : numero de filas en la base de datos
-                            "RRA:LAST:0:1:60") #10 filas, un minuto cada uno
+                            "RRA:AVERAGE:0:1:6") #10 filas, un minuto cada uno
 
         #en caso de haber un error lo sabremos
         if ret:
@@ -123,22 +145,6 @@ class Agente:
 
     def __eq__(self, agente):
         return self.Host==agente.Host
-
-    # def reporte(self):
-    #     c=canvas.Canvas(self.Host+"/"+self.Host+"_report.pdf")
-        
-    #     c.drawString(170, 780, "Reporte de trafico hecho por Cruz villalba Edwin Benrardo")
-
-    #     datos_principales= ("Comunidad:"+self.Comunidad+"\n",
-    #             "Host:"+self.Host+"\n",
-    #             "Nombre del sistema:"+self.Nombre_sistema+"\n",
-    #             "Numero de interfaces:"+self.Num_interfaces+"\n",
-    #             "Tiempo activo:"+self.Tiempo_Activo)
-    #     texto=c.beginText(70,760)
-    #     texto.textLines(datos_principales)
-    #     c.drawImage(self.Host+"/ports.png", 150,350, width=250, height=100)
-    #     c.drawText(texto)
-    #     c.save()
 
 
 class Agentes:
@@ -179,11 +185,11 @@ class Agentes:
             json.dump(self.temp_list,temp_file)
         
     def trafico(self):
-        # list_hilos=[]
-        # for index,agente in zip(range(0,len(self.agentes)),self.agentes):
-        # #for agente in self.agentes:
-        #     list_hilos.append(threading.Thread(target=agente.analisis))
-        #     list_hilos[index].start()
+        list_hilos=[]
+        for index,agente in zip(range(0,len(self.agentes)),self.agentes):
+        #for agente in self.agentes:
+            list_hilos.append(threading.Thread(target=agente.registrar))
+            list_hilos[index].start()
         pass
 
     def reportes(self):
@@ -204,8 +210,8 @@ if __name__=='__main__':
     opcion=0
     while True:
         # os.system("clear")
-        print(agentes.temp_list)
-        agentes.status()
+        # print(agentes.temp_list)
+        # agentes.status()
         print("|==============================|")
         print("Menu:\n1)Alta.\n2)Baja.\n3)Trafico.\n4)Generar reporte\n5)Salir\n")
         opcion=int(input("Escriba la opcion: "))
@@ -224,7 +230,7 @@ if __name__=='__main__':
                 print("No se encontro el agente a eliminar.") 
             sleep(3)
         elif opcion==3:
-            print("Espere 16 min para que se llene la base de datos...")
+            print("Espere 10 min para que se llene la base de datos...")
             agentes.trafico()
             sleep(2)
         elif opcion==4:
