@@ -47,24 +47,25 @@ class Agente:
         self.nuevaRDD("miUDP.rrd") # creando base de datos para 10 min
         # dejando 10 min corriendo el while para llenar la base de datos
         inicio=time()
-        fin= inicio + 60# 10 minutos
+        fin= inicio + 600# 10 minutos
         while True:
             print(self.updateListaConsultas())
             inicio=time()
             if not inicio < fin:
                 break
-        # print(rrdtool.lastupdate(self.Host+"/"+"miUDP.rrd"))
+        print(rrdtool.lastupdate(self.Host+"/"+"miUDP.rrd"))
+        pass
 
     def reporte(self):
         ultima_lectura=int(rrdtool.last(self.Host+"/"+"miUDP.rrd"))
         print(ultima_lectura)
         tiempo_final=ultima_lectura
-        tiempo_inicial=tiempo_final-60
+        tiempo_inicial=tiempo_final-600
         
         dicc=rrdtool.fetch(self.Host+'/miUDP.rrd',"-s,"+str(tiempo_inicial),"LAST")
-        Filas=6
+        Filas=60
         datos=dicc[2][Filas-1]
-        print(datos)
+        print(dicc)
 
         print("|=============Servicio UDP TFTP=================|")
         print("Comunidad:",self.Comunidad)
@@ -73,10 +74,10 @@ class Agente:
         print("Numero de interfaces de red:",self.Num_interfaces)
         print("Tiempo desde el ultimo reinicio:",self.Tiempo_Activo,"Segs")
         
-        print("#udpInDatagrams:",datos[0])
-        print("#udpNoPorts:",datos[1])
-        print("#updInErrors:",datos[2])
-        print("#udpOutDatagrams:",datos[3])
+        # print("#udpInDatagrams:",datos[0])
+        # print("#udpNoPorts:",datos[1])
+        # print("#updInErrors:",datos[2])
+        # print("#udpOutDatagrams:",datos[3])
             
 
     def updateListaConsultas(self)->list:
@@ -137,7 +138,7 @@ class Agente:
                             "DS:con3:COUNTER:60:U:U",
                             "DS:con4:COUNTER:60:U:U",
         #RRA: Cada 60 segs de hace un : la mitad de muestras se validan: cada 1 step : numero de filas en la base de datos
-                            "RRA:AVERAGE:0:1:6") #10 filas, un minuto cada uno
+                            "RRA:AVERAGE:0:1:60") #60 filas, 10segs cada uno
 
         #en caso de haber un error lo sabremos
         if ret:
