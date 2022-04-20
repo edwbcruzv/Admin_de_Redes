@@ -14,9 +14,9 @@ class Agente:
         self.Num_interfaces=self.consultaSNMP("1.3.6.1.2.1.2.1.0")
         self.Tiempo_Activo=self.consultaSNMP("1.3.6.1.2.1.1.3.0")
 
-        self.InMemorySize=None
-        self.hrSystemInitialLoadDevice=None
-        self.hrSystemInitialLoadParameters=None
+        self.ramUsed=None
+        self.hrStorageUsed=None
+        self.hrProcessorLoad=None
         # Creando carpeta para almacenar la base de datos generadas
         self.path=self.Host+"/"
         self.strBaseRRD=self.path+"Base.rrd"
@@ -28,15 +28,16 @@ class Agente:
 
     
 
-    def update(self,duracion=60,time_step=5):
-        filas=duracion/time_step
+    def update(self,duracion=60,time_step=6):
+        filas=int(duracion/time_step)
         self.createRRD(time_step,filas) # creando base de datos 
 
         inicio=time()
         fin= inicio + duracion# un minuto
         
         while True:
-            print(self.consultas())
+            self.consultas()
+            print(self.ramUsed,self.hrStorageUsed,self.hrProcessorLoad)
             inicio=time()
             if not inicio < fin:
                 break
@@ -58,29 +59,41 @@ class Agente:
     def consultas(self)->bool:
         # str_mib="1.3.6.1.2.1"
         # host-resources-mib= str_mib+".25"
+        # snmpwalk -v1 -c 123 localhost 
 
-        # InMemorySize:1.3.6.1.2.1.25.2.2
-        self.InMemorySize = self.consultaSNMP("1.3.6.1.2.1.7.1.0")
-        # hrSystemInitialLoadDevice:1.3.6.1.2.1.25.1.3
-        self.hrSystemInitialLoadDevice= self.consultaSNMP("1.3.6.1.2.1.7.2.0")
-        # hrSystemInitialLoadParameters:1.3.6.1.2.1.25.1.4
-        self.hrSystemInitialLoadParameters = self.consultaSNMP("1.3.6.1.2.1.7.3.0")
+        # ram total:1.3.6.1.4.1.2021.4.5
+        # ram usada:1.3.6.1.4.1.2021.4.6
+        # self.ramTotal=self.consultaSNMP("1.3.6.1.4.1.2021.4.5.0")
+        self.ramUsed=self.consultaSNMP("1.3.6.1.4.1.2021.4.6.0")
 
         # hrStorageTable:1.3.6.1.2.1.25.2.3
-        self.hrStorageTable = self.consultaSNMP("1.3.6.1.2.1.25.3.3.1.2.196608")
+        # self.hrStorageSize=self.consultaSNMP("1.3.6.1.2.1.25.2.3.1.5.1")
+        self.hrStorageUsed=self.consultaSNMP("1.3.6.1.2.1.25.2.3.1.6.1")
+
+        # disco total:1.3.6.1.4.1.2021.6.6
+        # disco usado:1.3.6.1.4.1.2021.6.8
+        
         # hrProcessorTable:1.3.6.1.2.1.25.3.3
+        self.hrProcessorLoad=self.consultaSNMP("1.3.6.1.2.1.25.3.3.1.2.196608")
+        # self.hrProcessorLoad=self.consultaSNMP("1.3.6.1.2.1.25.3.3.1.2.6")
 
+        # CPUSistemaPorcent:1.3.6.1.4.1.2021.11.9
+        # CPUSistemaBrutoTiempo:1.3.6.1.4.1.2021.11.50
+        # self.CPUSistemaPorcent=self.consultaSNMP("1.3.6.1.4.1.2021.11.9.0")
+        # self.CPUSistemaBrutoTiempo=self.consultaSNMP("1.3.6.1.4.1.2021.11.50.0")
 
-        rrdtool.update(self.strBaseRRD,"N:" + self.InMemorySize + ":"
-                                            + self.hrSystemInitialLoadDevice + ":" 
-                                            + self.hrSystemInitialLoadParameters + ":" 
-                                            + self.hrStorageTable)
+        rrdtool.update(self.strBaseRRD,"N:" + self.ramUsed + ":"
+                                            + self.hrStorageUsed + ":" 
+                                            + self.hrProcessorLoad)
                                             
         rrdtool.dump(self.strBaseRRD ,self.strBaseXML)
 
         return True
 
     def consultaSNMP(self,oid:str):
+        
+        # snmpget -v1 -c "123" "localhost" 1.3.6.1.2.1.25.3.3.1.2
+
         errorIndication, errorStatus, errorIndex, varBinds = next(
             # hace la solicitud getsnmp
             getCmd(SnmpEngine(),
@@ -116,7 +129,9 @@ class Agente:
                             # segundos que deben de pasar para que el dato sea invalido(siempre igual que el del step): 
                                     # Limite inferior: 
                                             # Limite superior
-                            "DS:var1:GAUGE:"+str(tiempo_step)+":0:100",
+                            "DS:var1:GAUGE:"+str(tiempo_step)+":U:U",   # self.ramUsed
+                            "DS:var2:GAUGE:"+str(tiempo_step)+":U:U",   # self.hrStorageUsed
+                            "DS:var3:GAUGE:"+str(tiempo_step)+":U:U",   # self.hrProcessorLoad
         # Lo que se va almacenart en cada fila
         #RRA: 
             # Funcion que se le aplicara a los datos contenidos en el buffer (de cada step): 
@@ -144,3 +159,8 @@ class Agente:
         s10="\n|==========================================|\n"
 
         return s1+s2+s3+s4+s5+s6+s7+s8+s9+s10
+
+
+pc=Agente("123", "localhost")
+
+pc.update()
