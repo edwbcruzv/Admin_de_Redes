@@ -4,7 +4,7 @@
 <rrd>
 	<version>0003</version>
 	<step>6</step> <!-- Seconds -->
-	<lastupdate>1649814453</lastupdate> <!-- 2022-04-12 20:47:33 CDT -->
+	<lastupdate>1651041969</lastupdate> <!-- 2022-04-27 01:46:09 CDT -->
 
 	<ds>
 		<name> var1 </name>
@@ -14,8 +14,8 @@
 		<max>NaN</max>
 
 		<!-- PDP Status -->
-		<last_ds>88952</last_ds>
-		<value>2.9925603156e+05</value>
+		<last_ds>0.10</last_ds>
+		<value>6.1247938000e-01</value>
 		<unknown_sec> 0 </unknown_sec>
 	</ds>
 
@@ -27,8 +27,8 @@
 		<max>NaN</max>
 
 		<!-- PDP Status -->
-		<last_ds>1935992</last_ds>
-		<value>6.5107237879e+06</value>
+		<last_ds>1.93</last_ds>
+		<value>6.4511369500e+00</value>
 		<unknown_sec> 0 </unknown_sec>
 	</ds>
 
@@ -40,8 +40,8 @@
 		<max>NaN</max>
 
 		<!-- PDP Status -->
-		<last_ds>17</last_ds>
-		<value>5.7171782000e+01</value>
+		<last_ds>100</last_ds>
+		<value>3.4562007100e+02</value>
 		<unknown_sec> 0 </unknown_sec>
 	</ds>
 
@@ -51,39 +51,39 @@
 		<pdp_per_row>1</pdp_per_row> <!-- 6 seconds -->
 
 		<params>
-		<xff>0.0000000000e+00</xff>
+		<xff>5.0000000000e-01</xff>
 		</params>
 		<cdp_prep>
 			<ds>
-			<primary_value>8.4430733167e+04</primary_value>
+			<primary_value>2.2743800667e-01</primary_value>
 			<secondary_value>0.0000000000e+00</secondary_value>
 			<value>NaN</value>
 			<unknown_datapoints>0</unknown_datapoints>
 			</ds>
 			<ds>
-			<primary_value>1.9381922142e+06</primary_value>
+			<primary_value>1.7969214950e+00</primary_value>
 			<secondary_value>0.0000000000e+00</secondary_value>
 			<value>NaN</value>
 			<unknown_datapoints>0</unknown_datapoints>
 			</ds>
 			<ds>
-			<primary_value>1.6612227000e+01</primary_value>
+			<primary_value>9.3948348833e+01</primary_value>
 			<secondary_value>0.0000000000e+00</secondary_value>
 			<value>NaN</value>
 			<unknown_datapoints>0</unknown_datapoints>
 			</ds>
 		</cdp_prep>
 		<database>
-			<!-- 2022-04-12 20:46:36 CDT / 1649814396 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:46:42 CDT / 1649814402 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:46:48 CDT / 1649814408 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:46:54 CDT / 1649814414 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:47:00 CDT / 1649814420 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:47:06 CDT / 1649814426 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:47:12 CDT / 1649814432 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:47:18 CDT / 1649814438 --> <row><v>NaN</v><v>NaN</v><v>NaN</v></row>
-			<!-- 2022-04-12 20:47:24 CDT / 1649814444 --> <row><v>6.4136000000e+04</v><v>1.9608080000e+06</v><v>1.6000000000e+01</v></row>
-			<!-- 2022-04-12 20:47:30 CDT / 1649814450 --> <row><v>8.4430733167e+04</v><v>1.9381922142e+06</v><v>1.6612227000e+01</v></row>
+			<!-- 2022-04-27 01:45:12 CDT / 1651041912 --> <row><v>3.7000000000e-01</v><v>1.6500000000e+00</v><v>3.0000000000e+01</v></row>
+			<!-- 2022-04-27 01:45:18 CDT / 1651041918 --> <row><v>2.8405283500e-01</v><v>1.7859776000e+00</v><v>3.2887463167e+01</v></row>
+			<!-- 2022-04-27 01:45:24 CDT / 1651041924 --> <row><v>1.2657949500e-01</v><v>1.9095667600e+00</v><v>4.0994622000e+01</v></row>
+			<!-- 2022-04-27 01:45:30 CDT / 1651041930 --> <row><v>9.0000000000e-02</v><v>1.9380095750e+00</v><v>4.5313944000e+01</v></row>
+			<!-- 2022-04-27 01:45:36 CDT / 1651041936 --> <row><v>9.6855776667e-02</v><v>1.9331442233e+00</v><v>5.1777165500e+01</v></row>
+			<!-- 2022-04-27 01:45:42 CDT / 1651041942 --> <row><v>7.3068170000e-02</v><v>1.9569318300e+00</v><v>6.2841048500e+01</v></row>
+			<!-- 2022-04-27 01:45:48 CDT / 1651041948 --> <row><v>8.6067093333e-02</v><v>1.9439329067e+00</v><v>7.2477118333e+01</v></row>
+			<!-- 2022-04-27 01:45:54 CDT / 1651041954 --> <row><v>7.3067233333e-02</v><v>1.9569327667e+00</v><v>7.9251097000e+01</v></row>
+			<!-- 2022-04-27 01:46:00 CDT / 1651041960 --> <row><v>1.3388532500e-01</v><v>1.8669315967e+00</v><v>8.6931826000e+01</v></row>
+			<!-- 2022-04-27 01:46:06 CDT / 1651041966 --> <row><v>2.2743800667e-01</v><v>1.7969214950e+00</v><v>9.3948348833e+01</v></row>
 		</database>
 	</rra>
 </rrd>
