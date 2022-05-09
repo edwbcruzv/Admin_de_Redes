@@ -84,7 +84,7 @@ class Agente:
         password = 'Secreto123@'
 
         msg = MIMEMultipart()
-        msg['Subject'] = "Notificacionde edwbcruzv"
+        msg['Subject'] = "Notificacionde edwbcruzv Edwin Bernardo Cruz villalba"
         msg['From'] = mailsender
         msg['To'] = mailreceip
         fp = open(imgpath, 'rb')
@@ -130,8 +130,8 @@ class Agente:
         # self.CPUSistemaPorcent=self.consultaSNMP("1.3.6.1.4.1.2021.11.9.0")
         # self.CPUSistemaBrutoTiempo=self.consultaSNMP("1.3.6.1.4.1.2021.11.50.0")
 
-        # rrdtool.update(self.strBaseRRD,"N:" + self.ramUsed + ":"
-        rrdtool.update("basura.rrd","N:" + self.ramUsed + ":"
+        rrdtool.update(self.strBaseRRD,"N:" + self.ramUsed + ":"
+        # rrdtool.update("basura.rrd","N:" + self.ramUsed + ":"
                                             + self.hrStorageUsed + ":" 
                                             + self.hrProcessorLoad)
                                             
@@ -165,8 +165,8 @@ class Agente:
 
     def createRRD(self,tiempo_step:int,numero_filas:int):
         # creamos la bae de datos
-        # ret = rrdtool.create(self.strBaseRRD,
-        ret = rrdtool.create("basura.rrd",
+        ret = rrdtool.create(self.strBaseRRD,
+        # ret = rrdtool.create("basura.rrd",
         # Tiempo en segs y fecha del sistema al momento de iniciar el almacenamiento
                             "--start",'N',
         # Duracion del step en segundos,
@@ -259,10 +259,10 @@ class Agente:
                     "VDEF:cargaLAST=RAM,LAST",
         # se le asigna un valor a la variable a partir de la notacion rpn.
         #se transforman datos antes de graficar
-                    "CDEF:umbralRAM1=RAM,1.0,LT,0,RAM,IF",  # if (CPU <= 40){CDFE=0} else{CDEF=CPU}
-                    "CDEF:umbralRAM2=RAM,1.5,LT,0,RAM,IF",  # if (CPU <= 60){CDFE=0} else{CDEF=CPU}
-                    "CDEF:umbralRAM3=RAM,1.9,LT,0,RAM,IF",  # if (CPU <= 80){CDFE=0} else{CDEF=CPU}
-                    "CDEF:umbralRAM4=RAM,2,LT,0,RAM,IF",  # if (CPU <= 100){CDFE=0} else{CDEF=CPU}
+                    "CDEF:umbralRAM1=RAM,0.1,LT,0,RAM,IF",  # if (CPU <= 40){CDFE=0} else{CDEF=CPU}
+                    "CDEF:umbralRAM2=RAM,0.2,LT,0,RAM,IF",  # if (CPU <= 60){CDFE=0} else{CDEF=CPU}
+                    "CDEF:umbralRAM3=RAM,0.3,LT,0,RAM,IF",  # if (CPU <= 80){CDFE=0} else{CDEF=CPU}
+                    "CDEF:umbralRAM4=RAM,0.4,LT,0,RAM,IF",  # if (CPU <= 100){CDFE=0} else{CDEF=CPU}
         # pinta una area en el grafico
                     "AREA:RAM#0d31d4:Carga RAM", # todos los datos
                     "AREA:umbralRAM1#98d40d:Umbral RAM1", # dato filtrado
@@ -270,9 +270,9 @@ class Agente:
                     "AREA:umbralRAM3#d4660d:Umbral RAM3", # dato filtrado
                     "AREA:umbralRAM4#d40d0d:Umbral RAM4", # dato filtrado
         # pinta una linea en el grafico
-                    "HRULE:1.0#FF0000:U1",
-                    "HRULE:1.50#FF0000:U2",
-                    "HRULE:1.90#FF0000:U3",
+                    "HRULE:0.1#FF0000:U1",
+                    "HRULE:0.2#FF0000:U2",
+                    "HRULE:0.3#FF0000:U3",
         # regresamos los valores al grear el grafico y al consultar la base de datos
                     "PRINT:cargaLAST:%6.2lf",
                     "GPRINT:cargaMIN:%6.2lf %SMIN",
@@ -350,9 +350,13 @@ class Agente:
         return s1+s2+s3+s4+s5+s6+s7+s8+s9+s10
 
 
-pc=Agente("123", "localhost")
+# pc=Agente("edwbcruzv", "localhost")
+pc=Agente("CesarLedesma", "10.100.73.64")
 
 pc.update()
-# pc.graficaCPU()
-# pc.graficaDISCO()
-# pc.graficaRAM()
+pc.graficaCPU()
+pc.graficaDISCO()
+pc.graficaRAM()
+# pc.notificar(pc.strCPUPNG)
+# pc.notificar(pc.strRAMPNG)
+# pc.notificar(pc.strDISCOPNG)
