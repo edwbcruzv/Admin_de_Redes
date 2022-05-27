@@ -22,7 +22,7 @@ Por defecto todo el trafico de la computadora se va por la interfaz inalambrica 
 // mostrar la tabla de roteo
 sudo route -v
 // para deviar el trafico a la interfaz tap0
-sudo route add -net 192.168.201.0 netmask 255.255.255.0 gw 192.168.201.15 dev tap0
+sudo route add -net {mask origen} netmask 255.255.255.0 gw {ip destino} dev tap0
 // verificamos que se haya modificado la tabla de enrutamiento
 sudo route -v
 // ahora el trafico que vaya del 192.168.201.0 ira al tap0

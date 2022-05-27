@@ -93,7 +93,7 @@ mkfs.ext2 /dev/sda1
 reboot
 
 // ya una vez reiniciada la maquina entramos a la consola de debian con f5
-// buscamos el archivo persist.sh
+// escribirmos persist.sh o lo autocompletamos y ejecutamos
 persist.sh
 //si nos sale un menu con la particion que creamos hace rato, entonces ya esta creada la persistencia, queda seleccionar la particion con '1'
 1
@@ -141,6 +141,26 @@ service ftp
 ver la documentacion del comando copy
 o ejecutar copy ? y poner atencion en como enviar por ftp
 ```
+
+
+```
+
+
+### RIP
+
+```
+
+// para conectar varios ruteadores por medio de RIP
+// una ves configurar el ruteador entraremos ala configuracion RIP del router
+router ip
+// despues 
+network {10.0.0.0/16}
+// 
+redistribute connected
+redistribute static
+// verificamos que ya esten conestadas y aparecta la opcion 'R'
+show ip route
+// deben de estar configuradas los dos ruteadores para que salga 'R'
 
 
 ```
