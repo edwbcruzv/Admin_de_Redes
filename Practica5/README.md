@@ -59,8 +59,13 @@ sintaxis de snmp version 1
 agregarle nuevas instrucciones a '/etc/snmp/snmptrapd.conf'
 
 ```
-traphandle .1.3.6.1.6.3.1.1.5.3 /usr/bin/traptoemail -s snmp.gmail.org dummycuenta3@gmail.com
-traphandle TRAP-TEST-MIB::demoTrap /home/cruz/echotrap.sh
+authCommunity log,execute,net 123
+traphandle .1.3.6.1.6.3.1.1.5.3 python3 /usr/bin/notificacion.py
+traphandle .1.3.6.1.6.3.1.1.5.4 python3 /usr/bin/notificacion2.py
+#traphandle .1.3.6.1.6.3.1.1.5.2 /home/cruz/echotrap.sh
+#traphandle .1.3.6.1.6.3.1.1.5.3 /home/cruz/echotrap.sh
+#traphandle TRAP-TEST-MIB::demotrap /home/cruz/echotrap.sh
+
 ```
 
 
@@ -81,11 +86,12 @@ ver documentacion
 
 >snmp enable traps
 
->snmp-server host
-
 >snmp-server host {ip del gestor} traps version 2c {comunidad}
 
 para mostrar la configuracion
 >show running-config
+
+
+### configuracion para tap0
 
 sudo route add -net {la mascara de subred} netmask 255.255.255.0 gw {ip destino} dev tap0

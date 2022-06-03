@@ -2,9 +2,12 @@
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 import smtplib
+import fileinput
+aux=fileinput.input()
+print(aux)
  
 user_mail = 'dummycuenta3@gmail.com'
-contrasena = 'Secreto123@'
+contrasena = 'Secreto123#'
 send_mail = 'dummycuenta3@gmail.com'
 smtp_server = 'snmtp.gmail.com:587'
 
