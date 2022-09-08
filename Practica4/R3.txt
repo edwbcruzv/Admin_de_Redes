@@ -1,0 +1,43 @@
+hostname rcp100-13
+!
+service telnet
+service http encrypted password ISOGMODC$58386c6a9c6a6a5654e165155bf767ae
+!
+administrator rcp encrypted password SKXLHJVN$rA.M/avAE3unfHtA1WzPm1
+!
+!
+!
+!
+router ospf
+  router-id 192.168.232.10
+  network 192.168.203.0/24 area 0
+  network 192.168.232.4/30 area 0
+  network 192.168.232.8/30 area 0
+!
+interface loopback lo
+  ip address 127.0.0.1/8
+  ip mtu 16436
+!
+interface ethernet eth0
+  ip address 192.168.203.15/24
+  ip mtu 1500
+  no shutdown
+!
+interface ethernet eth1
+  ip address 192.168.232.6/30
+  ip mtu 1500
+  no shutdown
+!
+interface ethernet eth2
+  ip address 192.168.232.10/30
+  ip mtu 1500
+  no shutdown
+!
+interface bridge br0
+  ip mtu 1500
+  shutdown
+!
+interface bridge br1
+  ip mtu 1500
+  shutdown
+!

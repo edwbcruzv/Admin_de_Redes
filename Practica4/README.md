@@ -31,3 +31,10 @@ Crear Topologia GNS3 que incluya:
     - 2 Agentes SNMP.
     - 2 Dispositivos IP tipo enrutador.
 
+
+
+### configurar telnet
+para instalar telnet
+>sudo apt install telnetd -y
+
+>sudo systemctl status inetd

@@ -49,7 +49,7 @@ show interface
 ### Configuracion de la persistencia
 
 
-//accedemos con la credenciales por defecto y presionames f5
+//accedemos con la credenciales por defecto y presionamos alt+f5
 ```
 // nos vamos a la carpeta raiz
  cd ..
@@ -152,7 +152,7 @@ o ejecutar copy ? y poner atencion en como enviar por ftp
 
 // para conectar varios ruteadores por medio de RIP
 // una ves configurar el ruteador entraremos ala configuracion RIP del router
-router ip
+router rip
 // despues 
 network {10.0.0.0/16}
 // 

@@ -8,7 +8,7 @@ ifconfig
 
 sudo route -v
 
-sudo route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.2 dev tap0
+#sudo route add -net 192.168.1.0 netmask 255.255.255.0 gw 192.168.1.2 dev tap0
 # sudo route add -net {mascara de subred} netmask 255.255.255.0 gw {ip destino} dev tap0
 
-sudo route -v
+#sudo route -v
